@@ -2,24 +2,21 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import "./styles/fonts/pretendard-subset.css";
-import { ChakraProvider } from "@chakra-ui/react";
+import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import { createGlobalStyle } from "styled-components";
-import reset from "styled-reset";
+import theme from "./global/theme";
 
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement
 );
 
 const GlobalStyle = createGlobalStyle`
-    ${reset}
-    body {
-        background-color: white;
-        color: #444;
+    
+    body { 
         font-family: "Pretendard",system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        box-sizing: border-box; 
+        font-size : 16px; 
         height: 100%;
-        line-height: 1.6;
-        overflow-x: hidden; 
+        line-height: 1.6; 
         position:relative;
     }
     
@@ -30,7 +27,8 @@ const GlobalStyle = createGlobalStyle`
 
 root.render(
     <React.StrictMode>
-        <ChakraProvider>
+        <ChakraProvider theme={theme}>
+            <ColorModeScript initialColorMode={theme.config.initialColorMode} />
             <GlobalStyle />
             <App />
         </ChakraProvider>
