@@ -1,5 +1,17 @@
-import { Box, Grid, Image } from "@chakra-ui/react";
+import {
+    Box,
+    Button,
+    Grid,
+    Heading,
+    HStack,
+    Image,
+    Skeleton,
+    SkeletonText,
+    Text,
+    VStack,
+} from "@chakra-ui/react";
 import Layout from "../components/common/layout";
+import Room from "../components/room";
 
 export default function Home() {
     return (
@@ -7,19 +19,22 @@ export default function Home() {
             <Layout />
             <Grid
                 mt={10}
-                px={40}
+                px={{ base: 10, lg: 40 }}
                 columnGap={4}
                 rowGap={8}
-                templateColumns={"repeat(5, 1fr)"}
+                templateColumns={{
+                    sm: "1fr",
+                    md: "1fr 1fr",
+                    lg: "repeat(3,1fr)",
+                    xl: "repeat(4,1fr)",
+                    "2xl": "repeat(5,1fr)",
+                }}
             >
                 <Box>
-                    <Box rounded="3xl" overflow="hidden">
-                        <Image
-                            h="280"
-                            src="https://a0.muscache.com/im/pictures/miso/Hosting-10989371/original/46c0c87f-d9bc-443c-9b64-24d9e594b54c.jpeg?im_w=720"
-                        ></Image>
-                    </Box>
+                    <Skeleton h={280} rounded="2xl" mb={7} />
+                    <SkeletonText w={"50%"} noOfLines={3}></SkeletonText>
                 </Box>
+                <Room />
             </Grid>
         </>
     );
