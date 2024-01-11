@@ -10,15 +10,28 @@ import {
 } from "@chakra-ui/react";
 import { FaRegHeart, FaStar } from "react-icons/fa";
 
-export default function Room() {
+interface IRoomProps {
+    imageURL: string;
+    name: string;
+    rating: number;
+    city: string;
+    country: string;
+    price: number;
+}
+
+export default function Room({
+    imageURL,
+    name,
+    rating,
+    city,
+    country,
+    price,
+}: IRoomProps) {
     const gray = useColorModeValue("gray.600", "gray.300");
     return (
         <VStack alignItems={"flex-start"}>
             <Box position={"relative"} rounded="2xl" mb={3} overflow="hidden">
-                <Image
-                    minH="280"
-                    src="https://a0.muscache.com/im/pictures/miso/Hosting-10989371/original/46c0c87f-d9bc-443c-9b64-24d9e594b54c.jpeg?im_w=720"
-                ></Image>
+                <Image minH="280" src={imageURL}></Image>
                 <Button
                     variant={"unstyled"}
                     position={"absolute"}
@@ -29,7 +42,7 @@ export default function Room() {
                     <FaRegHeart size="20px" />
                 </Button>
             </Box>
-            <Box>
+            <Box w={"100%"}>
                 <Grid gap={2} templateColumns={"6.5fr 1fr"}>
                     <Text
                         display={"block"}
@@ -37,22 +50,18 @@ export default function Room() {
                         noOfLines={1}
                         fontSize={"md"}
                     >
-                        스페인 발렌시아(Valencia)
+                        {name}
                     </Text>
-                    <HStack
-                        _hover={{ color: "red.100" }}
-                        alignItems="center"
-                        spacing={1}
-                    >
+                    <HStack alignItems="center" spacing={1}>
                         <FaStar size={12} />
-                        <Text>4.78</Text>
+                        <Text>{rating}</Text>
                     </HStack>
                 </Grid>
                 <Text fontSize={"sm"} color={gray}>
-                    Valencia, Spain
+                    {city}, {country}
                 </Text>
                 <Text fontSize={"sm"} as="b" color={gray}>
-                    $72 / night
+                    ${price} / night
                 </Text>
             </Box>
         </VStack>
