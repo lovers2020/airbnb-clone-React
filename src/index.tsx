@@ -1,19 +1,36 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App";
+import "./styles/fonts/pretendard-subset.css";
+import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
+import { createGlobalStyle } from "styled-components";
+import theme from "./global/theme";
 
 const root = ReactDOM.createRoot(
-  document.getElementById('root') as HTMLElement
-);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+    document.getElementById("root") as HTMLElement
 );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+const GlobalStyle = createGlobalStyle`
+    
+    body { 
+        font-family: "Pretendard",system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+        font-size : 16px; 
+        height: 100%;
+        line-height: 1.6; 
+        position:relative;
+    }
+    
+    * {
+        box-sizing: border-box;
+    }
+    `;
+
+root.render(
+    <React.StrictMode>
+        <ChakraProvider theme={theme}>
+            <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+            <GlobalStyle />
+            <App />
+        </ChakraProvider>
+    </React.StrictMode>
+);
