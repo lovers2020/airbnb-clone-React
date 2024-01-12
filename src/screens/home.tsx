@@ -1,20 +1,9 @@
-import {
-    Box,
-    Button,
-    Grid,
-    Heading,
-    HStack,
-    Image,
-    Skeleton,
-    SkeletonText,
-    Text,
-    VStack,
-} from "@chakra-ui/react";
-import { useState } from "react";
-import { useEffect } from "react";
+import { Grid } from "@chakra-ui/react";
+import { useQuery } from "react-query";
 import Layout from "../components/common/layout";
 import Room from "../components/room/room";
 import RoomSkeleton from "../components/room/roomSkeleton";
+import { getRooms } from "../global/api";
 
 interface IPhoto {
     pk: string;
@@ -34,18 +23,8 @@ interface IRoom {
 }
 
 export default function Home() {
-    const [isLoading, setIsLoading] = useState(true);
-    const [rooms, SetRooms] = useState<IRoom[]>([]);
-    const fetchRooms = async () => {
-        const response = await fetch("http://127.0.0.1:8000/api/v1/rooms/");
-        const json = await response.json();
-        SetRooms(json);
-        setIsLoading(false);
-    };
+    const { isLoading, data } = useQuery<IRoom[]>(["rooms"], getRooms);
 
-    useEffect(() => {
-        fetchRooms();
-    }, []);
     return (
         <>
             <Layout />
@@ -67,8 +46,9 @@ export default function Home() {
                         <RoomSkeleton />
                     </>
                 ) : null}
-                {rooms.map((room) => (
+                {data?.map((room, index) => (
                     <Room
+                        key={index}
                         name={room.name}
                         imageURL={room.photos[0].file}
                         rating={room.rating}
