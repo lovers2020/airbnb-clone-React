@@ -16,6 +16,7 @@
         "@types/react-dom": "^18.2.18",
         "axios": "^1.6.5",
         "framer-motion": "^10.17.9",
+        "js-cookie": "^3.0.5",
         "react": "^18.2.0",
         "react-dom": "^18.2.0",
         "react-helmet": "^6.1.0",
@@ -55,6 +56,7 @@
         ]
     },
     "devDependencies": {
+        "@types/js-cookie": "^3.0.6",
         "@types/react-helmet": "^6.1.11",
         "@types/react-router-dom": "^5.3.3",
         "@types/styled-components": "^5.1.34"
