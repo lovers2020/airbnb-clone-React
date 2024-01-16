@@ -42,7 +42,7 @@ export default function Header() {
     const toast = useToast();
     const queryClient = useQueryClient();
     async function onLogOut() {
-        const data = await logOut();
+        await logOut();
         queryClient.refetchQueries(["me"]);
         const toastId = toast({
             title: "Login out...!",

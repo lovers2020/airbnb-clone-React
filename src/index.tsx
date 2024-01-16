@@ -28,15 +28,11 @@ const GlobalStyle = createGlobalStyle`
 const client = new QueryClient();
 
 root.render(
-    <React.StrictMode>
-        <QueryClientProvider client={client}>
-            <ChakraProvider theme={theme}>
-                <ColorModeScript
-                    initialColorMode={theme.config.initialColorMode}
-                />
-                <GlobalStyle />
-                <App />
-            </ChakraProvider>
-        </QueryClientProvider>
-    </React.StrictMode>
+    <QueryClientProvider client={client}>
+        <ChakraProvider theme={theme}>
+            <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+            <GlobalStyle />
+            <App />
+        </ChakraProvider>
+    </QueryClientProvider>
 );
