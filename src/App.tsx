@@ -1,6 +1,7 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import GithubConfirm from "./components/common/githubConfirm";
+import KakaoConfirm from "./components/common/kakaoConfirm";
 import Layout from "./components/common/layout";
 import RoomDetail from "./components/room/roomDetail";
 import NotFound from "./global/notfound";
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
                     {
                         path: "github",
                         element: <GithubConfirm />,
+                    },
+                    {
+                        path: "kakao",
+                        element: <KakaoConfirm />,
                     },
                 ],
             },
