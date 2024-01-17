@@ -1,54 +1,15 @@
-import {
-    Box,
-    Button,
-    Grid,
-    Heading,
-    HStack,
-    Image,
-    Skeleton,
-    SkeletonText,
-    Text,
-    VStack,
-} from "@chakra-ui/react";
-import { useState } from "react";
-import { useEffect } from "react";
-import Layout from "../components/common/layout";
+import { Grid } from "@chakra-ui/react";
+import { useQuery } from "react-query";
 import Room from "../components/room/room";
 import RoomSkeleton from "../components/room/roomSkeleton";
-
-interface IPhoto {
-    pk: string;
-    file: string;
-    description: string;
-}
-
-interface IRoom {
-    pk: number;
-    name: string;
-    country: string;
-    city: string;
-    price: number;
-    rating: number;
-    is_owner: boolean;
-    photos: IPhoto[];
-}
+import { getRooms } from "../global/api";
+import { IRoomList } from "../global/types";
 
 export default function Home() {
-    const [isLoading, setIsLoading] = useState(true);
-    const [rooms, SetRooms] = useState<IRoom[]>([]);
-    const fetchRooms = async () => {
-        const response = await fetch("http://127.0.0.1:8000/api/v1/rooms/");
-        const json = await response.json();
-        SetRooms(json);
-        setIsLoading(false);
-    };
+    const { isLoading, data } = useQuery<IRoomList[]>(["rooms"], getRooms);
 
-    useEffect(() => {
-        fetchRooms();
-    }, []);
     return (
         <>
-            <Layout />
             <Grid
                 mt={10}
                 px={{ base: 10, lg: 40 }}
@@ -67,8 +28,10 @@ export default function Home() {
                         <RoomSkeleton />
                     </>
                 ) : null}
-                {rooms.map((room) => (
+                {data?.map((room, index) => (
                     <Room
+                        key={room.pk}
+                        pk={room.pk}
                         name={room.name}
                         imageURL={room.photos[0].file}
                         rating={room.rating}

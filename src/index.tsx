@@ -5,6 +5,7 @@ import "./styles/fonts/pretendard-subset.css";
 import { ChakraProvider, ColorModeScript } from "@chakra-ui/react";
 import { createGlobalStyle } from "styled-components";
 import theme from "./global/theme";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 const root = ReactDOM.createRoot(
     document.getElementById("root") as HTMLElement
@@ -24,13 +25,14 @@ const GlobalStyle = createGlobalStyle`
         box-sizing: border-box;
     }
     `;
+const client = new QueryClient();
 
 root.render(
-    <React.StrictMode>
+    <QueryClientProvider client={client}>
         <ChakraProvider theme={theme}>
             <ColorModeScript initialColorMode={theme.config.initialColorMode} />
             <GlobalStyle />
             <App />
         </ChakraProvider>
-    </React.StrictMode>
+    </QueryClientProvider>
 );
