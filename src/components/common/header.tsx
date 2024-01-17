@@ -12,6 +12,7 @@ import {
     MenuItem,
     MenuList,
     Stack,
+    ToastId,
     useColorMode,
     useColorModeValue,
     useDisclosure,
@@ -22,7 +23,8 @@ import SignUpModal from "./signUpModal";
 import { Link } from "react-router-dom";
 import useUser from "../../lib/useUser";
 import { logOut } from "../../global/api";
-import { useQueryClient } from "react-query";
+import { useMutation, useQueryClient } from "react-query";
+import { useRef } from "react";
 
 export default function Header() {
     const { userLoading, isLoggedIn, user } = useUser();
@@ -32,32 +34,40 @@ export default function Header() {
         onOpen: onLoginOpen,
     } = useDisclosure();
     const {
-        isOpen: isLSignUpOpen,
-        onClose: onLSignUpClose,
-        onOpen: onLSignUpOpen,
+        isOpen: isSignUpClose,
+        onClose: onSignUpClose,
+        onOpen: onSignUpOpen,
     } = useDisclosure();
     const { colorMode, toggleColorMode } = useColorMode();
     const logoColor = useColorModeValue("red.500", "red.200");
     const Icon = useColorModeValue(FaMoon, FaSun);
     const toast = useToast();
     const queryClient = useQueryClient();
-    async function onLogOut() {
-        await logOut();
-        queryClient.refetchQueries(["me"]);
-        const toastId = toast({
-            title: "Login out...!",
-            description: "Sad to see you go...",
-            status: "loading",
-            position: "bottom-right",
-            isClosable: true,
-        });
-        setTimeout(() => {
-            toast.update(toastId, {
-                status: "success",
-                title: "Done!",
-                description: "See you later!",
+    const toastId = useRef<ToastId>();
+
+    const mutation = useMutation(logOut, {
+        onMutate: () => {
+            toastId.current = toast({
+                title: "Login out...!",
+                description: "Sad to see you go...",
+                status: "loading",
+                position: "bottom-right",
+                isClosable: true,
             });
-        }, 1000);
+        },
+        onSuccess: () => {
+            queryClient.refetchQueries(["me"]);
+            if (toastId.current) {
+                toast.update(toastId.current, {
+                    status: "success",
+                    title: "Done!",
+                    description: "See you later!",
+                });
+            }
+        },
+    });
+    async function onLogOut() {
+        mutation.mutate();
     }
 
     return (
@@ -94,7 +104,7 @@ export default function Header() {
                                     <LightMode>
                                         <Button
                                             colorScheme={"red"}
-                                            onClick={onLSignUpOpen}
+                                            onClick={onSignUpOpen}
                                         >
                                             Sign up
                                         </Button>
@@ -123,8 +133,8 @@ export default function Header() {
                         onClose={onLoginClose}
                     ></LoginModal>
                     <SignUpModal
-                        isOpen={isLSignUpOpen}
-                        onClose={onLSignUpClose}
+                        isOpen={isSignUpClose}
+                        onClose={onSignUpClose}
                     />
                 </Stack>
             </Box>
