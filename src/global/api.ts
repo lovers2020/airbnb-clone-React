@@ -88,3 +88,22 @@ export const usernameLogin = ({
             }
         )
         .then((response) => response.data);
+
+export interface ISignUpVariables {
+    username: string;
+    password: string;
+    email: string;
+    name: string;
+}
+export const SignUp = ({ username, password, email, name }: ISignUpVariables) =>
+    axiosInstance
+        .post(
+            "/users/sign-up",
+            { username, password, email, name },
+            {
+                headers: {
+                    "X-CSRFToken": Cookies.get("csrftoken") || "",
+                },
+            }
+        )
+        .then((response) => response.data);

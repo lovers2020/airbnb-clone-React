@@ -14,7 +14,7 @@ import {
     useToast,
     VStack,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import { FaLock, FaUserNinja } from "react-icons/fa";
 import { useMutation, useQueryClient } from "react-query";
@@ -121,6 +121,7 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
                                 Username or Password are wrong.
                             </Text>
                         ) : null}
+
                         <Button
                             isLoading={mutation.isLoading}
                             type="submit"
