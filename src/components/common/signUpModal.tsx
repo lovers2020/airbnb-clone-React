@@ -66,12 +66,19 @@ export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
     });
     function onSubmit({ username, password, name, email }: ISignUpForm) {
         mutation.mutate({ username, password, name, email });
-        if (!errorCode) reset();
+        console.log(errorCode);
+        if (errorCode !== 409) reset();
     }
+    function onClickModalOverlay() {
+        onClose();
+        SetErrorCode(0);
+        reset();
+    }
+    console.log(errorCode);
 
     return (
         <>
-            <Modal onClose={onClose} isOpen={isOpen}>
+            <Modal onClose={onClickModalOverlay} isOpen={isOpen}>
                 <ModalOverlay></ModalOverlay>
                 <ModalContent>
                     <ModalHeader>Sign up</ModalHeader>
@@ -133,7 +140,7 @@ export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
                                         fontSize={"13px"}
                                         color={"red.500"}
                                     >
-                                        Name or Email are already exist.
+                                        Username or Email are already exist.
                                     </Text>
                                 ) : null}
                             </InputGroup>
