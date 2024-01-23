@@ -55,7 +55,6 @@ export default function LoginModal({ isOpen, onClose }: LoginModalProps) {
             });
             onClose(); // 모달 창을 닫기 위함
             reset();
-
             queryClient.refetchQueries(["me"]);
         },
     });
