@@ -1,6 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { QueryFunctionContext } from "react-query";
+import { formatDate } from "../lib/utils";
 
 const axiosInstance = axios.create({
     baseURL: "http://127.0.0.1:8000/api/v1/",
@@ -182,15 +183,18 @@ export const CreatePhoto = ({
             }
         )
         .then((response) => response.data);
+
 type CheckBookingQueryKey = [string, string?, Date[]?];
+
 export const checkBooking = ({
     queryKey,
 }: QueryFunctionContext<CheckBookingQueryKey>) => {
     const [, roomPk, dates] = queryKey;
     if (dates) {
         const [firstDate, secondDate] = dates;
-        const [checkIn] = firstDate.toJSON().split("T");
-        const [checkOut] = secondDate.toJSON().split("T");
+        const checkIn = formatDate(firstDate);
+        const checkOut = formatDate(secondDate);
+        console.log(checkIn, checkOut);
         return axiosInstance
             .get(
                 `rooms/${roomPk}/bookings/check?check_in=${checkIn}&check_out=${checkOut}`

@@ -12,18 +12,21 @@ import {
     Text,
     VStack,
 } from "@chakra-ui/react";
-import { FaStar } from "react-icons/fa";
+import { FaEdit, FaStar } from "react-icons/fa";
 import { useQuery } from "react-query";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { checkBooking, getRoomDetail, getRoomReviews } from "../../global/api";
 import { IReview, IRoomDetail } from "../../global/types";
 import "react-calendar/dist/Calendar.css";
-import { useEffect, useState } from "react";
+import "../../global/calendar.css";
+import { useState } from "react";
 import Calendar from "react-calendar";
+import { Helmet } from "react-helmet";
 
 export default function RoomDetail() {
-    const [dates, setDates] = useState<Date[]>();
     const { roomPk } = useParams();
+    const navigate = useNavigate();
+    const [dates, setDates] = useState<Date[]>();
     const { isLoading, data } = useQuery<IRoomDetail>(
         ["rooms", roomPk],
         getRoomDetail
@@ -40,12 +43,24 @@ export default function RoomDetail() {
             enabled: dates !== undefined,
         }
     );
+    function onEditClick(event: React.SyntheticEvent<HTMLButtonElement>) {
+        event.preventDefault();
+        navigate(`/rooms/${roomPk}/edit`);
+    }
 
     return (
         <>
+            <Helmet>
+                <title>{data ? data.name : "Loading"}</title>
+            </Helmet>
             <Box pb={10} mt={10} px={{ base: 10, lg: 40 }}>
                 <Skeleton h={"43px"} isLoaded={!isLoading}>
-                    <Heading>{data?.name}</Heading>
+                    <HStack>
+                        <Heading>{data?.name}</Heading>
+                        <Button onClick={onEditClick}>
+                            {data?.is_owner ? <FaEdit /> : null}
+                        </Button>
+                    </HStack>
                 </Skeleton>
                 <Grid
                     mt={8}
@@ -162,6 +177,9 @@ export default function RoomDetail() {
                     </Box>
                     <Box pt={10}>
                         <Calendar
+                            formatDay={(locale, date) =>
+                                date.toLocaleString("en", { day: "numeric" })
+                            }
                             onChange={setDates as any}
                             prev2Label={null}
                             next2Label={null}
