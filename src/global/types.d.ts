@@ -6,6 +6,7 @@ export interface IRoomProps {
     country: string;
     price: number;
     pk: number;
+    isOwner: Boolean;
 }
 export interface IRoomPhotoPhoto {
     pk: string;
@@ -31,25 +32,28 @@ export interface IRoomOwner {
 }
 
 export interface IAmenity {
+    pk: number;
     name: string;
     description: string;
+}
+export interface ICategory {
+    pk: number;
+    name: string;
+    kind: string;
 }
 
 export interface IRoomDetail extends IRoomList {
     created_at: string;
     updated_at: string;
     rooms: number;
-    toilet: number;
+    toilets: number;
     description: string;
     address: string;
     pet_friendly: true;
     kind: string;
     is_owner: boolean;
     is_liked: boolean;
-    category: {
-        name: string;
-        kind: string;
-    };
+    category: ICategory;
     owner: IRoomOwner;
     amenities: IAmenity[];
 }
@@ -71,4 +75,20 @@ export interface IUser {
     gender: string;
     language: string;
     currency: string;
+}
+
+export interface IUploadRoomVariables {
+    roomPk: string;
+    name: string;
+    country: string;
+    city: string;
+    price: number;
+    rooms: number;
+    toilets: number;
+    description: string;
+    address: string;
+    pet_friendly: Boolean;
+    kind: string;
+    amenities: number[];
+    category: number;
 }

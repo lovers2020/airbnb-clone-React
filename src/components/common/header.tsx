@@ -38,7 +38,7 @@ export default function Header() {
         onClose: onSignUpClose,
         onOpen: onSignUpOpen,
     } = useDisclosure();
-    const { colorMode, toggleColorMode } = useColorMode();
+    const { toggleColorMode } = useColorMode();
     const logoColor = useColorModeValue("red.500", "red.200");
     const Icon = useColorModeValue(FaMoon, FaSun);
     const toast = useToast();
@@ -120,6 +120,12 @@ export default function Header() {
                                         />
                                     </MenuButton>
                                     <MenuList>
+                                        {user?.is_host ? (
+                                            <Link to="/rooms/upload">
+                                                {" "}
+                                                <MenuItem>Upload room</MenuItem>
+                                            </Link>
+                                        ) : null}
                                         <MenuItem onClick={onLogOut}>
                                             Log out
                                         </MenuItem>

@@ -1,7 +1,7 @@
 import { Grid } from "@chakra-ui/react";
 import { useQuery } from "react-query";
-import Room from "../components/room/room";
-import RoomSkeleton from "../components/room/roomSkeleton";
+import Room from "./room/room";
+import RoomSkeleton from "./room/roomSkeleton";
 import { getRooms } from "../global/api";
 import { IRoomList } from "../global/types";
 
@@ -33,7 +33,8 @@ export default function Home() {
                         key={room.pk}
                         pk={room.pk}
                         name={room.name}
-                        imageURL={room.photos[0].file}
+                        isOwner={room.is_owner}
+                        imageURL={room.photos[0]?.file}
                         rating={room.rating}
                         city={room.city}
                         country={room.country}

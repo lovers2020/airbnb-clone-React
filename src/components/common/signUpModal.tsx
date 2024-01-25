@@ -74,7 +74,6 @@ export default function SignUpModal({ isOpen, onClose }: SignUpModalProps) {
         SetErrorCode(0);
         reset();
     }
-    console.log(errorCode);
 
     return (
         <>

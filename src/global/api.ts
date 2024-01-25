@@ -1,6 +1,8 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 import { QueryFunctionContext } from "react-query";
+import { formatDate } from "../lib/utils";
+import { IUploadRoomVariables } from "./types";
 
 const axiosInstance = axios.create({
     baseURL: "http://127.0.0.1:8000/api/v1/",
@@ -26,6 +28,14 @@ export const getRoomReviews = ({ queryKey }: QueryFunctionContext) => {
 export const getMe = () => {
     return axiosInstance.get("users/me").then((response) => response.data);
 };
+export const editRoom = (variables: IUploadRoomVariables) =>
+    axiosInstance
+        .put(`/rooms/${variables.roomPk}`, variables, {
+            headers: {
+                "X-CSRFToken": Cookies.get("csrftoken") || "",
+            },
+        })
+        .then((response) => response.data);
 
 export const logOut = () =>
     axiosInstance
@@ -107,3 +117,84 @@ export const SignUp = ({ username, password, email, name }: ISignUpVariables) =>
             }
         )
         .then((response) => response.data);
+
+export const getAmenites = () =>
+    axiosInstance.get("rooms/amenities").then((response) => response.data);
+
+export const getCategories = () =>
+    axiosInstance.get("categories").then((response) => response.data);
+
+export const uploadRoom = (variables: IUploadRoomVariables) =>
+    axiosInstance
+        .post("/rooms/", variables, {
+            headers: {
+                "X-CSRFToken": Cookies.get("csrftoken") || "",
+            },
+        })
+        .then((response) => response.data);
+
+export const getUploadURL = () =>
+    axiosInstance
+        .post("/medias/photos/get-url", null, {
+            headers: {
+                "X-CSRFToken": Cookies.get("csrftoken") || "",
+            },
+        })
+        .then((response) => response.data);
+
+export interface IUploadImageVariables {
+    file: FileList;
+    uploadURL: string;
+}
+export const UploadImage = ({ file, uploadURL }: IUploadImageVariables) => {
+    const form = new FormData();
+    form.append("file", file[0]);
+    return axios
+        .post(uploadURL, form, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
+        .then((response) => response.data);
+};
+
+export interface ICreatePhotoVariables {
+    description: string;
+    file: string;
+    roomPk: string;
+}
+export const CreatePhoto = ({
+    description,
+    file,
+    roomPk,
+}: ICreatePhotoVariables) =>
+    axiosInstance
+        .post(
+            `rooms/${roomPk}/photos`,
+            { description, file },
+            {
+                headers: {
+                    "X-CSRFToken": Cookies.get("csrftoken") || "",
+                },
+            }
+        )
+        .then((response) => response.data);
+
+type CheckBookingQueryKey = [string, string?, Date[]?];
+
+export const checkBooking = ({
+    queryKey,
+}: QueryFunctionContext<CheckBookingQueryKey>) => {
+    const [, roomPk, dates] = queryKey;
+    if (dates) {
+        const [firstDate, secondDate] = dates;
+        const checkIn = formatDate(firstDate);
+        const checkOut = formatDate(secondDate);
+        console.log(checkIn, checkOut);
+        return axiosInstance
+            .get(
+                `rooms/${roomPk}/bookings/check?check_in=${checkIn}&check_out=${checkOut}`
+            )
+            .then((response) => response.data);
+    }
+};
