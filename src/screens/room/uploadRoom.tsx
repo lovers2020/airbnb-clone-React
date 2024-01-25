@@ -21,13 +21,13 @@ import { useForm } from "react-hook-form";
 import { FaBed, FaDollarSign, FaToilet } from "react-icons/fa";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate } from "react-router-dom";
+import { getAmenites, getCategories, uploadRoom } from "../../global/api";
 import {
-    getAmenites,
-    getCategories,
+    IAmenity,
+    ICategory,
+    IRoomDetail,
     IUploadRoomVariables,
-    uploadRoom,
-} from "../../global/api";
-import { IAmenity, ICategory, IRoomDetail } from "../../global/types";
+} from "../../global/types";
 import useHostOnlyPage from "../../components/hostOnlyPage";
 import useProtectedPage from "../../components/protectedPage";
 

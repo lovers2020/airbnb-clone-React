@@ -22,20 +22,23 @@ import { FaBed, FaDollarSign, FaToilet } from "react-icons/fa";
 import { useMutation, useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import {
+    editRoom,
     getAmenites,
     getCategories,
     getRoomDetail,
-    IUploadRoomVariables,
-    uploadRoom,
 } from "../../global/api";
-import { IAmenity, ICategory, IRoomDetail } from "../../global/types";
+import {
+    IAmenity,
+    ICategory,
+    IRoomDetail,
+    IUploadRoomVariables,
+} from "../../global/types";
 import useHostOnlyPage from "../../components/hostOnlyPage";
 import useProtectedPage from "../../components/protectedPage";
 import uuid from "react-uuid";
 
 export default function EditRoom() {
     const { register, handleSubmit } = useForm<IUploadRoomVariables>();
-
     const { roomPk } = useParams();
     const { data: roomData, isLoading: roomDataisLoading } =
         useQuery<IRoomDetail>(["editRoom", roomPk], getRoomDetail);
@@ -51,19 +54,23 @@ export default function EditRoom() {
 
     const toast = useToast();
     const navigate = useNavigate();
-    const mutation = useMutation(uploadRoom, {
+    const mutation = useMutation(editRoom, {
         onSuccess: (data: IRoomDetail) => {
             toast({
                 status: "success",
-                title: "Room created",
+                title: "Modified!",
                 position: "bottom-right",
             });
-            navigate(`/rooms/${data.pk}`);
+            data.pk = Number(roomPk);
+            navigate(`/rooms/${roomPk}`);
         },
     });
 
     function onSubmit(data: IUploadRoomVariables) {
-        mutation.mutate(data);
+        if (roomPk) {
+            data.roomPk = roomPk;
+            mutation.mutate(data);
+        }
     }
     const isLoading =
         roomDataisLoading && amenitiesLoading && categoriesLoading;

@@ -2,6 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { QueryFunctionContext } from "react-query";
 import { formatDate } from "../lib/utils";
+import { IUploadRoomVariables } from "./types";
 
 const axiosInstance = axios.create({
     baseURL: "http://127.0.0.1:8000/api/v1/",
@@ -27,6 +28,14 @@ export const getRoomReviews = ({ queryKey }: QueryFunctionContext) => {
 export const getMe = () => {
     return axiosInstance.get("users/me").then((response) => response.data);
 };
+export const editRoom = (variables: IUploadRoomVariables) =>
+    axiosInstance
+        .put(`/rooms/${variables.roomPk}`, variables, {
+            headers: {
+                "X-CSRFToken": Cookies.get("csrftoken") || "",
+            },
+        })
+        .then((response) => response.data);
 
 export const logOut = () =>
     axiosInstance
@@ -115,21 +124,6 @@ export const getAmenites = () =>
 export const getCategories = () =>
     axiosInstance.get("categories").then((response) => response.data);
 
-export interface IUploadRoomVariables {
-    name: string;
-    country: string;
-    city: string;
-    price: number;
-    rooms: number;
-    toilets: number;
-    description: string;
-    address: string;
-    pet_friendly: Boolean;
-    kind: string;
-    amenities: number[];
-    category: number;
-}
-
 export const uploadRoom = (variables: IUploadRoomVariables) =>
     axiosInstance
         .post("/rooms/", variables, {
@@ -147,6 +141,7 @@ export const getUploadURL = () =>
             },
         })
         .then((response) => response.data);
+
 export interface IUploadImageVariables {
     file: FileList;
     uploadURL: string;
@@ -162,6 +157,7 @@ export const UploadImage = ({ file, uploadURL }: IUploadImageVariables) => {
         })
         .then((response) => response.data);
 };
+
 export interface ICreatePhotoVariables {
     description: string;
     file: string;
