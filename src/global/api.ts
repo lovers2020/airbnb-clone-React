@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { QueryFunctionContext } from "react-query";
 import { formatDate } from "../lib/utils";
-import { IUploadRoomVariables } from "./types";
+import { IRoomBooking, IUploadRoomVariables } from "./types";
 
 const axiosInstance = axios.create({
     baseURL: "http://127.0.0.1:8000/api/v1/",
@@ -190,7 +190,6 @@ export const checkBooking = ({
         const [firstDate, secondDate] = dates;
         const checkIn = formatDate(firstDate);
         const checkOut = formatDate(secondDate);
-        console.log(checkIn, checkOut);
         return axiosInstance
             .get(
                 `rooms/${roomPk}/bookings/check?check_in=${checkIn}&check_out=${checkOut}`
@@ -198,3 +197,12 @@ export const checkBooking = ({
             .then((response) => response.data);
     }
 };
+
+export const createBooking = (variable: IRoomBooking) =>
+    axiosInstance
+        .post(`rooms/${variable.pk}/bookings`, variable, {
+            headers: {
+                "X-CSRFToken": Cookies.get("csrftoken") || "",
+            },
+        })
+        .then((response) => response.data);

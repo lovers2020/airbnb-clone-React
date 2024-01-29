@@ -76,6 +76,7 @@ export default function EditRoom() {
         roomDataisLoading && amenitiesLoading && categoriesLoading;
     useHostOnlyPage();
     useProtectedPage();
+    console.log(roomData);
     return (
         <>
             {!isLoading ? (
@@ -232,7 +233,11 @@ export default function EditRoom() {
                                     })}
                                     placeholder="Choose a category"
                                     key={uuid()}
-                                    defaultValue={roomData?.category.pk}
+                                    defaultValue={
+                                        roomData?.category !== null
+                                            ? roomData?.category.pk
+                                            : 0
+                                    }
                                 >
                                     {categories?.map((category, index) => (
                                         <option

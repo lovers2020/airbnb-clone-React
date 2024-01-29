@@ -92,3 +92,10 @@ export interface IUploadRoomVariables {
     amenities: number[];
     category: number;
 }
+
+export interface IRoomBooking {
+    pk: string;
+    check_in: string;
+    check_out: string;
+    guests: number;
+}

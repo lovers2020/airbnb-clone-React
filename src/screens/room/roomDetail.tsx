@@ -8,30 +8,42 @@ import {
     Heading,
     HStack,
     Image,
+    InputGroup,
+    InputLeftAddon,
+    Select,
     Skeleton,
     Text,
+    useToast,
     VStack,
 } from "@chakra-ui/react";
-import { FaEdit, FaStar } from "react-icons/fa";
-import { useQuery } from "react-query";
+import { FaChild, FaEdit, FaStar } from "react-icons/fa";
+import { useMutation, useQuery } from "react-query";
 import { useNavigate, useParams } from "react-router-dom";
-import { checkBooking, getRoomDetail, getRoomReviews } from "../../global/api";
-import { IReview, IRoomDetail } from "../../global/types";
+import {
+    checkBooking,
+    createBooking,
+    getRoomDetail,
+    getRoomReviews,
+} from "../../global/api";
+import { IReview, IRoomBooking, IRoomDetail } from "../../global/types";
 import "react-calendar/dist/Calendar.css";
 import "../../global/calendar.css";
 import { useState } from "react";
 import Calendar from "react-calendar";
 import { Helmet } from "react-helmet";
+import { formatDate } from "../../lib/utils";
+import { useForm } from "react-hook-form";
+import uuid from "react-uuid";
 
 export default function RoomDetail() {
     const { roomPk } = useParams();
     const navigate = useNavigate();
+    const { register, handleSubmit } = useForm<IRoomBooking>();
     const [dates, setDates] = useState<Date[]>();
     const { isLoading, data } = useQuery<IRoomDetail>(
         ["rooms", roomPk],
         getRoomDetail
     );
-
     const { data: reviewsData, isLoading: isReviewsLoading } = useQuery<
         IReview[]
     >(["rooms", roomPk, "reviews"], getRoomReviews);
@@ -43,9 +55,31 @@ export default function RoomDetail() {
             enabled: dates !== undefined,
         }
     );
+    const toast = useToast();
+    const muation = useMutation(createBooking, {
+        onSuccess: (data: IRoomBooking) => {
+            toast({
+                status: "success",
+                title: "Booked!",
+                position: "bottom-right",
+            });
+        },
+    });
+
     function onEditClick(event: React.SyntheticEvent<HTMLButtonElement>) {
         event.preventDefault();
         navigate(`/rooms/${roomPk}/edit`);
+    }
+    function onBookingClick(data: IRoomBooking) {
+        if (dates && roomPk) {
+            const [firstDate, secondDate] = dates;
+            const checkIn = formatDate(firstDate);
+            const checkOut = formatDate(secondDate);
+            data.check_in = checkIn;
+            data.check_out = checkOut;
+            data.pk = roomPk;
+            muation.mutate(data);
+        }
     }
 
     return (
@@ -175,7 +209,11 @@ export default function RoomDetail() {
                             </Container>
                         </Box>
                     </Box>
-                    <Box pt={10}>
+                    <VStack
+                        as={"form"}
+                        pt={10}
+                        onSubmit={handleSubmit(onBookingClick)}
+                    >
                         <Calendar
                             formatDay={(locale, date) =>
                                 date.toLocaleString("en", { day: "numeric" })
@@ -192,21 +230,41 @@ export default function RoomDetail() {
                             }
                             selectRange
                         />
+                        <HStack justifyContent={"space-between"}>
+                            <Text>Guests</Text>
+                            <InputGroup>
+                                <InputLeftAddon
+                                    children={<FaChild />}
+                                ></InputLeftAddon>
+                                <Select
+                                    {...register("guests", { required: true })}
+                                    defaultValue={1}
+                                >
+                                    {[1, 2, 3, 4].map((current) => (
+                                        <option key={uuid()} value={current}>
+                                            {current}
+                                        </option>
+                                    ))}
+                                </Select>
+                            </InputGroup>
+                        </HStack>
                         <Button
                             isLoading={isCheckingBooking}
                             isDisabled={!checkBookingData?.ok}
                             mt={5}
                             w="100%"
                             colorScheme={"red"}
+                            type="submit"
                         >
                             Make booking
                         </Button>
+
                         {!checkBookingData?.ok && !isCheckingBooking ? (
                             <Text color={"red.500"}>
                                 Can't book on those dates, sorry.
                             </Text>
                         ) : null}
-                    </Box>
+                    </VStack>
                 </Grid>
             </Box>
         </>
