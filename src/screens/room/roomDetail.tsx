@@ -81,6 +81,7 @@ export default function RoomDetail() {
             muation.mutate(data);
         }
     }
+
     const loadingStatus = isLoading && isReviewsLoading && isCheckingBooking;
 
     return (
@@ -93,9 +94,11 @@ export default function RoomDetail() {
                     <Skeleton h={"43px"} isLoaded={!isLoading}>
                         <HStack>
                             <Heading>{data?.name}</Heading>
-                            <Button onClick={onEditClick}>
-                                {data?.is_owner ? <FaEdit /> : null}
-                            </Button>
+                            {data?.is_owner ? (
+                                <Button onClick={onEditClick}>
+                                    <FaEdit />
+                                </Button>
+                            ) : null}
                         </HStack>
                     </Skeleton>
                     <Grid
